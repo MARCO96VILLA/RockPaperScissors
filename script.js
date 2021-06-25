@@ -8,69 +8,84 @@ function computerPlay() {
         return "Scissors";
     }
 }
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-}
+
 function playMessageWin(cpu, player) {
-    return "You Win! " + player + " beats " + cpu;
+    return "You Win! " + player + " beats " + cpu + "!";
 }
 function playMessageDraw(both) {
     return "You both played " + both + "! It's a Draw!";
 }
 function playMessageLose(cpu, player) {
-    return "You Lose! " + cpu + " beats " + player;
+    return "You Lose! " + cpu + " beats " + player + "!";
 }
+function win(cpu, player, playerScore) {
+    let resultDiv = document.getElementById("results")
+    let para = document.createElement("p")
+    para.textContent = playMessageWin(cpu, player)
+    resultDiv.appendChild(para);
+    return playerScore++;
+}
+function lose(cpu, player, cpuScore) {
+    let resultDiv = document.getElementById("results")
+    let para = document.createElement("p")
+    para.textContent = playMessageLose(cpu, player)
+    resultDiv.appendChild(para);
+    return cpuScore++;
+}
+function draw(cpu) {
+    let resultDiv = document.getElementById("results")
+    let para = document.createElement("p")
+    para.textContent = playMessageDraw(cpu)
+    resultDiv.appendChild(para);
+}
+
+let scoreDiv = document.getElementById("score");
+let playerScore = 0;
+let cpuScore = 0;
+
+document.getElementById("rock").addEventListener("click", function() { playRound(computerPlay(), "Rock")});
+document.getElementById("paper").addEventListener("click", function() { playRound(computerPlay(), "Paper")});
+document.getElementById("scissors").addEventListener("click", function() { playRound(computerPlay(), "Scissors")});
+
+
 function playRound(cpuMove, playerMove) {
     if (playerMove === "Rock") {
         if (cpuMove === "Scissors") {
-            return "win";
+            win(cpuMove, playerMove)
+            playerScore += 1;
         } else if (cpuMove === "Rock") {
-            return "draw";
+            draw(cpuMove)
         } else {
-            return "lose";
+            lose(cpuMove, playerMove)
+            cpuScore += 1;
         }
     } else if (playerMove === "Paper") {
         if (cpuMove === "Scissors") {
-            return "lose";
+            lose(cpuMove, playerMove, cpuScore);
+            cpuScore += 1;
         } else if (cpuMove === "Rock") {
-            return "win";
+            win(cpuMove, playerMove, playerScore);
+            playerScore += 1;
         } else {
-            return "draw";
+            draw(cpuMove);
         }
     } else if (playerMove === "Scissors") {
         if (cpuMove === "Scissors") {
-            return "draw";
+            draw(cpuMove);
         } else if (cpuMove === "Rock") {
-            return "lose";
+            lose(cpuMove, playerMove, cpuScore);
+            cpuScore += 1;
         } else {
-            return "win";
+            win(cpuMove, playerMove, playerScore);
+            playerScore += 1;
         }
     } else {
         return "invalid";
     }
-}
-function game() {
-    let playerScore = 0;
-    let cpuScore = 0;
 
-    for (i = 0; i < 5; i++) {
-        let computerOut = computerPlay();
-        let playerInput = capitalizeFirstLetter(window.prompt("Your move: "));
-        let roundResult = playRound(computerOut, playerInput);
-        if (roundResult === "win") {
-            playerScore++
-            console.log(playMessageWin(computerOut, playerInput));
-        } else if (roundResult === "lose") {
-            cpuScore++
-            console.log(playMessageLose(computerOut, playerInput));
-        } else if (roundResult === "draw") {
-            console.log(playMessageDraw(computerOut));
-        } else {
-            console.log("Invalid move")
-        }
-        console.log(roundResult);
-    }
-    let gameRes = "Game result: " + playerScore + "-" + cpuScore;
-    console.log(gameRes);
+    updateScore()
+} 
+
+function updateScore() {
+    document.querySelector('#score-value').textContent = `${playerScore} - ${cpuScore}`;
 }
-game()
