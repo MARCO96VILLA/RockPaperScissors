@@ -1,2 +1,2 @@
 # RockPaperScissors
-## RockPaperScissors basic project
+RockPaperScissors basic project
